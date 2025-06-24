@@ -1,0 +1,52 @@
+3rd client script
+var address = ZDK.Apps.CRM.Property_Listings.fetch();
+var ogadd = ZDK.Page.getField("Address").getValue();
+var f1 = 0;
+for (let rec of address) {
+    if (ogadd === rec._Address ) {
+       
+        f1 = 1;
+    }
+   
+}
+if (f1 == 1) {
+ 
+    ZDK.Client.showMessage(" Address is already exist. ");
+    return false;
+}
+ 
+else {
+    return true;
+}
+----------------------------------------------------------------------------------------
+
+first client script
+const data = ZDK.Page.getField("Inquiry_Name").getValue();
+log(data);
+
+if (data != null)
+{
+    var inquiry = ZDK.Apps.CRM.inquiries.fetchById(data.id);
+    //log(data.id);
+    //log()
+
+    if (inquiry._Contact_Email);
+    {
+        ZDK.Page.getField("inquiry_Email").setValue(inquiry._Contact_Email);
+        ZDK.Page.getField("inquiry_Phone").setValue(inquiry._Contact_Phone);
+        ZDK.Page.getField("inquiry_Budget").setValue(inquiry._Budget_Range);
+    }
+}
+-----------------------------------------------------------------------------------------
+
+second client script
+
+var data = ZDK.Page.getField('Sale_Price').getValue();
+console.log(data);
+var comm = ZDK.Page.getField('Commission_Percentage').getValue();
+console.log(comm);
+var price = (data * comm) / 100;
+console.log(price);
+var tcomm = ZDK.Page.getField('Total_Commission').setValue(price);
+ 
+ 

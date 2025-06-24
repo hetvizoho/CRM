@@ -1,0 +1,177 @@
+Event_Title,Start_DateTime,End_DateTime,All_day,Description,Venue,Owner,What_Id,Who_Id,Remind_Participants
+Project Kickoff,2025-02-10T10:00:00+05:30,2025-02-10T11:00:00+05:30,false,Discuss requirements,Conference Room,1234567890,0987654321,1122334455,15
+ 
+ 
+ 
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+<script src="https://live.zwidgets.com/js-sdk/1.2/ZohoEmbededAppSDK.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Import Task</title>
+<style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+ 
+        h2 {
+            color: #333;
+        }
+ 
+        a {
+            text-decoration: none;
+            color: blue;
+            display: block;
+            margin-bottom: 10px;
+        }
+ 
+        input[type="file"] {
+            margin: 10px 0;
+        }
+ 
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+ 
+        button:hover {
+            background-color: #0056b3;
+        }
+ 
+        .success {
+            margin-top: 15px;
+            font-weight: bold;
+            color: green;
+        }
+ 
+        .error {
+            margin-top: 15px;
+            font-weight: bold;
+            color: red;
+        }
+</style>
+</head>
+ 
+<body>
+ 
+    <h2>Import Task</h2>
+<a href="Book2.csv" download>Download CSV Template</a>
+<p>Select a file:</p>
+<input type="file" id="fileInput">
+<button id="submitBtn">Submit</button>
+ 
+    <p id="successMsg" class="success" style="display: none;">Tasks Successfully Imported</p>
+<p id="errorMsg" class="error" style="display: none;">Error: Import Failed</p>
+ 
+    <script>
+        // ✅ Initialize Zoho SDK
+        ZOHO.embeddedApp.on("PageLoad", function (data) {
+            console.log("Zoho Page Data:", data);
+            ZOHO.embeddedApp.init().then(() => {
+                console.log("Zoho SDK Initialized Successfully");
+            }).catch(err => console.error("Zoho SDK Initialization Failed:", err));
+        });
+ 
+        // ✅ File Upload Event Listener
+        document.getElementById("submitBtn").addEventListener("click", function () {
+            const fileInput = document.getElementById("fileInput");
+            if (fileInput.files.length === 0) {
+                alert("Please select a CSV file before submitting.");
+                return;
+            }
+ 
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                processCSV(event.target.result);
+            };
+            reader.readAsText(file);
+        });
+ 
+        // ✅ Process CSV Data & Send API Request
+        function processCSV(csvData) {
+    ZOHO.embeddedApp.init().then(() => {
+        console.log("Zoho SDK Ready - Processing CSV...");
+ 
+        const lines = csvData.split("\n").map(line => line.trim()).filter(line => line);
+        if (lines.length < 2) {
+            showError("Error: CSV file is empty or formatted incorrectly.");
+            return;
+        }
+ 
+        for (let i = 1; i < lines.length; i++) {
+            const data = lines[i].split(",").map(d => d.trim());
+ 
+            // ✅ Ensure "Event_Title" is always present
+            let eventTitle = data[0] && data[0].trim() ? data[0].trim() : "Untitled Meeting";
+ 
+            if (!eventTitle) {
+                console.error(`Skipping row ${i}: Event_Title is missing.`);
+                continue;
+            }
+ 
+            let TaskData = {
+                    "Subject": (data[0]),
+                    "Who_Id.id" : (data[1]),
+                    "Status" : (data[2]),
+                    "Priority" : (data[3]),
+                    //"Due_Date" : (data[4]),
+            };
+ 
+            // ✅ Log API request before sending
+            console.log(`Row ${i} - Final Data Sent to API:`, JSON.stringify(TaskData, null, 2));
+ 
+            ZOHO.CRM.API.insertRecord({ Entity: "Tasks", APIData: TaskData })
+                .then(response => handleResponse(response, i))
+                .catch(error => showError(`Error in Row ${i}: API Request Failed`, error));
+        }
+    }).catch(error => {
+        console.error("Zoho SDK Initialization Error:", error);
+        showError("Zoho SDK failed to initialize. Please try again.");
+    });
+}
+ 
+ 
+        // ✅ Handle API Response
+        function handleResponse(response, row) {
+            console.log(`Row ${row} - API Response:`, response);
+ 
+            if (response.data && response.data[0].code === "SUCCESS") {
+                document.getElementById("successMsg").style.display = "block";
+            } else {
+                let errorMessage = `Error in Row ${row}: ${response.data[0].message}`;
+                console.error("API Response Error:", JSON.stringify(response, null, 2));
+                showError(errorMessage);
+            }
+        }
+ 
+        function showError(message, error = null) {
+            document.getElementById("errorMsg").innerText = message;
+            document.getElementById("errorMsg").style.display = "block";
+            if (error) console.error("Full API Error:", JSON.stringify(error, null, 2));
+        }
+ 
+ 
+        // ✅ Format Date to ISO 8601
+        function formatDate(inputDate) {
+            if (!inputDate) return null;
+            let date = new Date(inputDate);
+            return isNaN(date.getTime()) ? null : date.toISOString();
+        }
+ 
+        // // ✅ Display Error Messages
+        // function showError(message, error = null) {
+        //     document.getElementById("errorMsg").innerText = message;
+        //     document.getElementById("errorMsg").style.display = "block";
+        //     if (error) console.error(message, error);
+        // }
+</script>
+</body>
+ 
+</html>

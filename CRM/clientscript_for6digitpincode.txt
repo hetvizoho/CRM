@@ -1,0 +1,8 @@
+var zipvalidate = ZDK.Page.getField("Zip_Code").getValue();
+ 
+if (zipvalidate.length > 6 || zipvalidate.length < 6) {
+  ZDK.Client.showAlert("Invalid PIN Code! Please enter a 6-digit number.");
+  ZDK.Page.getField("Zip_Code").setValue("");
+  return false;
+}
+return true;

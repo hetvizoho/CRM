@@ -1,0 +1,44 @@
+dtls = zoho.crm.getRecordById("Deals",did);
+contact_name = dtls.getjson("Contact_Name").get("id");
+account_name = dtls.getjson("Account_Name").get("id");
+sub = dtls.get("Deal_Name");
+//subform_data = dtls.get("Subform_1");
+subform_data = dtls.get("Subform_1");
+info subform_data;
+if(subform_data.isEmpty())
+{
+	return "subform was empty";
+}
+else
+{
+	product_items = List();
+	for each  ele in subform_data
+	{
+		product_id = ele.get("Product_Name").getJSON("id");
+		product_name = ele.get("Product_Name").getJSON("name");
+		product_qty = ele.get("qty");
+		product_rate = ele.get("List_Price");
+		total_amt = product_qty * product_rate;
+		mp = Map();
+		mp.put("product",{"name":product_name,"id":product_id});
+		mp.put("quantity",product_qty);
+		mp.put("list_price",product_rate);
+		mp.put("net_total",total_amt);
+		mp.put("total",total_amt);
+		mp.put("product_description","demo");
+		product_items.add(mp);
+	}
+	newmap = Map();
+	newmap.put("Product_Details",product_items);
+	newmap.put("Subject",sub);
+	newmap.put("Account_Name",account_name);
+	result = zoho.crm.createRecord("Quotes",newmap);
+}
+if(result != Null)
+{
+	return "Quotes Created SuccessFully...";
+}
+else
+{
+	return "Quotes Not Created";
+}

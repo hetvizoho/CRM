@@ -1,0 +1,13 @@
+var address = ZDK.Apps.CRM.Legal_Documents.fetch();
+var ogadd = ZDK.Page.getField("Address").getValue();
+ 
+for (let rec of address) {
+    if (ogadd === rec._Address) {
+        ZDK.Client.showMessage("❌This Address is already exist. Please use another Address");
+        return true;
+    }
+    // else
+    // {
+    //     return false;
+    // }
+}
