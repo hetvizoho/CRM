@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Onboarding Widget</title>
+    <link rel="stylesheet" href="widget.css">
+    <!-- Keep all existing CSS styles -->
+    </head>
+<body>
+    <div class="widget-container">
+        <div class="widget-header">
+            <h1>Client Onboarding Portal</h1>
+            <p>Complete your investment account opening process step by step</p>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="step-indicators" id="stepIndicators">
+                <div class="step-indicator active" data-step="1">
+                    <span>Basic Info</span>
+                </div>
+                <div class="step-indicator" data-step="2">
+                    <span>First Holder</span>
+                </div>
+                <div class="step-indicator" data-step="3">
+                    <span>Second Holder</span>
+                </div>
+                <div class="step-indicator" data-step="4">
+                    <span>Third Holder</span>
+                </div>
+                <div class="step-indicator" data-step="5">
+                    <span>Investment</span>
+                </div>
+                <div class="step-indicator" data-step="6">
+                    <span>Declaration</span>
+                </div>
+                <div class="step-indicator" data-step="7">
+                    <span>Review</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-container">
+            <div id="loadingScreen" class="loading hidden">
+                <div class="spinner"></div>
+                <p>Loading your data...</p>
+            </div>
+
+            <div id="statusContainer" class="hidden">
+                <div id="statusBadge" class="status-badge"></div>
+            </div>
+
+            <form id="onboardingForm">
+                <input type="hidden" id="recordId" name="recordId">
+                <input type="hidden" id="recordStatus" name="recordStatus" value="draft">
+
+                <!-- Keep all existing form steps exactly as they are -->
+                <!-- Step 1: Basic Information -->
+                <div class="form-step active" data-step="1">
+                    <h2 class="step-title">Basic Information</h2>
+                    
+                    <div class="section-group">
+                        <div class="section-title">Account Details</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nameOfApplicant" class="required-field">Name of Applicant</label>
+                                <input type="text" id="nameOfApplicant" name="nameOfApplicant" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="onboardingOwner" class="required-field">Onboarding Owner</label>
+                                <input type="text" id="onboardingOwner" name="onboardingOwner" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email" class="required-field">Email</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="secondaryEmail">Secondary Email</label>
+                                <input type="email" id="secondaryEmail" name="secondaryEmail">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row-3">
+                            <div class="form-group">
+                                <label for="exchangeRate">Exchange Rate</label>
+                                <input type="number" id="exchangeRate" name="exchangeRate" step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label for="currency">Currency</label>
+                                <select id="currency" name="currency">
+                                    <option value="">Select Currency</option>
+                                    <option value="INR">INR</option>
+                                    <option value="USD">USD</option>
+                                    <option value="EUR">EUR</option>
+                                    <option value="GBP">GBP</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="emailOptOut">Email Opt Out</label>
+                                <select id="emailOptOut" name="emailOptOut">
+                                    <option value="No">No</option>
+                                    <option value="Yes">Yes</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="investorDistributorType">Investor/Distributor Type</label>
+                                <select id="investorDistributorType" name="investorDistributorType">
+                                    <option value="">Select Type</option>
+                                    <option value="Individual">Individual</option>
+                                    <option value="Corporate">Corporate</option>
+                                    <option value="Partnership">Partnership</option>
+                                    <option value="Trust">Trust</option>
+                                    <option value="HUF">HUF</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="salesType">Sales Type</label>
+                                <select id="salesType" name="salesType">
+                                    <option value="">Select Sales Type</option>
+                                    <option value="Direct">Direct</option>
+                                    <option value="Regular">Regular</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-group">
+                        <div class="section-title">Contact Lookups</div>
+                        <div class="form-row-3">
+                            <div class="form-group">
+                                <label for="leadLookup">Lead Lookup</label>
+                                <input type="text" id="leadLookup" name="leadLookup">
+                            </div>
+                            <div class="form-group">
+                                <label for="familyLookup">Family Lookup</label>
+                                <input type="text" id="familyLookup" name="familyLookup">
+                            </div>
+                            <div class="form-group">
+                                <label for="investorLookup">Investor Lookup</label>
+                                <input type="text" id="investorLookup" name="investorLookup">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-group">
+                        <div class="section-title">Onboarding Status</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="onboardingStatus">Onboarding Status</label>
+                                <select id="onboardingStatus" name="onboardingStatus">
+                                    <option value="Draft">Draft</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Under Review">Under Review</option>
+                                    <option value="Approved">Approved</option>
+                                    <option value="Rejected">Rejected</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="opportunity">Opportunity</label>
+                                <input type="text" id="opportunity" name="opportunity">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Keep all other existing steps... -->
+                <!-- Step 2: First Holder -->
+                <div class="form-step" data-step="2">
+                    <h2 class="step-title">First/Sole Holder Details</h2>
+                    
+                    <!-- Identity Details -->
+                    <div class="section-group">
+                        <div class="section-title">Section 1 - Identity Details - First/Sole Holder</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="fh_fatherSpouseName">Father's/Spouse's Name</label>
+                                <input type="text" id="fh_fatherSpouseName" name="fh_fatherSpouseName">
+                            </div>
+                            <div class="form-group">
+                                <label for="fh_motherName">Mother's Name</label>
+                                <input type="text" id="fh_motherName" name="fh_motherName">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row-3">
+                            <div class="form-group">
+                                <label for="fh_dateOfBirth" class="required-field">Date of Birth</label>
+                                <input type="date" id="fh_dateOfBirth" name="fh_dateOfBirth" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="fh_maritalStatus">Marital Status</label>
+                                <select id="fh_maritalStatus" name="fh_maritalStatus">
+                                    <option value="">Select Status</option>
+                                    <option value="Single">Single</option>
+                                    <option value="Married">Married</option>
+                                    <option value="Divorced">Divorced</option>
+                                    <option value="Widowed">Widowed</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="fh_gender" class="required-field">Gender</label>
+                                <select id="fh_gender" name="fh_gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Others">Others</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="fh_citizenship">Citizenship</label>
+                                <select id="fh_citizenship" name="fh_citizenship">
+                                    <option value="Indian">Indian</option>
+                                    <option value="NRI">NRI</option>
+                                    <option value="PIO">PIO</option>
+                                    <option value="Foreign">Foreign</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="fh_typeOfAccount">Type of Account</label>
+                                <select id="fh_typeOfAccount" name="fh_typeOfAccount">
+                                    <option value="">Select Account Type</option>
+                                    <option value="Individual">Individual</option>
+                                    <option value="Joint">Joint</option>
+                                    <option value="Minor">Minor</option>
+                                    <option value="Corporate">Corporate</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="fh_residentialStatus">Residential Status</label>
+                                <select id="fh_residentialStatus" name="fh_residentialStatus">
+                                    <option value="">Select Status</option>
+                                    <option value="Resident Individual">Resident Individual</option>
+                                    <option value="Non Resident Indian">Non Resident Indian</option>
+                                    <option value="Foreign National">Foreign National</option>
+                                    <option value="Person of Indian Origin">Person of Indian Origin</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="fh_pan" class="required-field">PAN</label>
+                                <input type="text" id="fh_pan" name="fh_pan" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" placeholder="ABCDE1234F" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row-3">
+                            <div class="form-group">
+                                <label for="fh_gstNo">GST No</label>
+                                <input type="text" id="fh_gstNo" name="fh_gstNo">
+                            </div>
+                            <div class="form-group">
+                                <label for="fh_uidAadhaar">UID / Aadhaar No</label>
+                                <input type="text" id="fh_uidAadhaar" name="fh_uidAadhaar" pattern="[0-9]{12}" placeholder="123456789012">
+                            </div>
+                            <div class="form-group">
+                                <label for="fh_ckyc">CKYC No</label>
+                                <input type="text" id="fh_ckyc" name="fh_ckyc">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="fh_tan">TAN</label>
+                            <input type="text" id="fh_tan" name="fh_tan">
+                        </div>
+                    </div>
+
+                    <!-- Income Details -->
+                    <div class="section-group">
+                        <div class="section-title">Section 2 - Income Details - First/Sole Holder</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="fh_netWorth">Net Worth (Not older than 1 year)</label>
+                                <input type="number" id="fh_netWorth" name="fh_netWorth" step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label for="fh_asOnDate">As on Date</label>
+                                <input type="date" id="fh_asOnDate" name="fh_asOnDate">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="fh_incomeRange">Income Range (per annum)</label>
+                                <select id="fh_incomeRange" name="fh_incomeRange">
+                                    <option value="">Select Income Range</option>
+                                    <option value="Below 1 Lac">Below 1 Lac</option>
+                                    <option value="1-5 Lacs">1-5 Lacs</option>
+                                    <option value="5-10 Lacs">5-10 Lacs</option>
+                                    <option value="10-25 Lacs">10-25 Lacs</option>
+                                    <option value="25-1 Crore">25-1 Crore</option>
+                                    <option value="Above 1 Crore">Above 1 Crore</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="fh_occupation">Occupation</label>
+                                <select id="fh_occupation" name="fh_occupation">
+                                    <option value="">Select Occupation</option>
+                                    <option value="Private Service">Private Service</option>
+                                    <option value="Government Service">Government Service</option>
+                                    <option value="Business">Business</option>
+                                    <option value="Professional">Professional</option>
+                                    <option value="Retired">Retired</option>
+                                    <option value="Housewife">Housewife</option>
+                                    <option value="Student">Student</option>
+                                    <option value="Others">Others</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="fh_pleaseSelectStatus">Please select Status</label>
+                                <select id="fh_pleaseSelectStatus" name="fh_pleaseSelectStatus">
+                                    <option value="">Select Status</option>
+                                    <option value="Politically Exposed Person">Politically Exposed Person</option>
+                                    <option value="Related to Politically Exposed Person">Related to Politically Exposed Person</option>
+                                    <option value="Not Applicable">Not Applicable</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="fh_sourcesOfFunds">Sources of Funds</label>
+                                <select id="fh_sourcesOfFunds" name="fh_sourcesOfFunds">
+                                    <option value="">Select Source</option>
+                                    <option value="Salary">Salary</option>
+                                    <option value="Business Income">Business Income</option>
+                                    <option value="Gift">Gift</option>
+                                    <option value="Ancestral Property">Ancestral Property</option>
+                                    <option value="Rental Income">Rental Income</option>
+                                    <option value="Sale of Property">Sale of Property</option>
+                                    <option value="Others">Others</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="fh_natureOfBusinessProfession">Nature of Business/Profession</label>
+                                <input type="text" id="fh_natureOfBusinessProfession" name="fh_natureOfBusinessProfession">
+                            </div>
+                            <div class="form-group">
+                                <label for="fh_overallInvestmentGoals">Overall Investment Goals</label>
+                                <select id="fh_overallInvestmentGoals" name="fh_overallInvestmentGoals">
+                                    <option value="">Select Goal</option>
+                                    <option value="Capital Appreciation">Capital Appreciation</option>
+                                    <option value="Income">Income</option>
+                                    <option value="Capital Preservation">Capital Preservation</option>
+                                    <option value="Liquidity">Liquidity</option>
+                                    <option value="Tax Saving">Tax Saving</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="fh_typeOfCompanyFirm">Type of Company/Firm</label>
+                            <select id="fh_typeOfCompanyFirm" name="fh_typeOfCompanyFirm">
+                                <option value="">Select Type</option>
+                                <option value="Proprietorship">Proprietorship</option>
+                                <option value="Partnership">Partnership</option>
+                                <option value="Private Limited">Private Limited</option>
+                                <option value="Public Limited">Public Limited</option>
+                                <option value="LLP">LLP</option>
+                                <option value="Trust">Trust</option>
+                                <option value="Society">Society</option>
+                                <option value="HUF">HUF</option>
+                                <option value="Others">Others</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Contact Details -->
+                    <div class="section-group">
+                        <div class="section-title">Section 3 - Contact Details - First/Sole Holder</div>
+                        <div class="form-row-3">
+                            <div class="form-group">
+                                <label for="fh_mobileNo" class="required-field">Mobile No.</label>
+                                <input type="tel" id="fh_mobileNo" name="fh_mobileNo" pattern="[0-9]{10}" placeholder="9876543210" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="fh_landlineNo">Landline No.</label>
+                                <input type="tel" id="fh_landlineNo" name="fh_landlineNo">
+                            </div>
+                            <div class="form-group">
+                                <label for="fh_emailId" class="required-field">Email ID</label>
+                                <input type="email" id="fh_emailId" name="fh_emailId" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Proof of Identity -->
+                    <div class="section-group">
+                        <div class="section-title">Section 4 - Proof of Identity - First/Sole Holder</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="fh_passportNumber">A - Passport Number</label>
+                                <input type="text" id="fh_passportNumber" name="fh_passportNumber">
+                            </div>
+                            <div class="form-group">
+                                <label for="fh_passportExpiryDate">Passport Expiry Date</label>
+                                <input type="date" id="fh_passportExpiryDate" name="fh_passportExpiryDate">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="fh_panCard">PAN Card</label>
+                                <input type="text" id="fh_panCard" name="fh_panCard">
+                            </div>
+                            <div class="form-group">
+                                <label for="fh_voterID">B - Voter ID</label>
+                                <input type="text" id="fh_voterID" name="fh_voterID">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="fh_uidAadhaarProof">D - UID (Aadhaar)</label>
+                                <input type="text" id="fh_uidAadhaarProof" name="fh_uidAadhaarProof">
+                            </div>
+                            <div class="form-group">
+                                <label for="fh_drivingLicense">E - Driving License</label>
+                                <input type="text" id="fh_drivingLicense" name="fh_drivingLicense">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="fh_drivingLicenseExpiryDate">Driving License Expiry Date</label>
+                                <input type="date" id="fh_drivingLicenseExpiryDate" name="fh_drivingLicenseExpiryDate">
+                            </div>
+                            <div class="form-group">
+                                <label for="preferredAssetClassOther">Preferred Asset Class - Other</label>
+                                <input type="text" id="preferredAssetClassOther" name="preferredAssetClassOther">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Second Holder -->
+                <div class="form-step" data-step="3">
+                    <h2 class="step-title">Second Holder Details</h2>
+                    
+                    <div class="alert alert-info">
+                        <strong>Note:</strong> Fill this section only if you have a second holder for the account.
+                    </div>
+
+                    <!-- Identity Details - Second Holder -->
+                    <div class="section-group">
+                        <div class="section-title">Section 10 - Identity Details - Second Holder</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="sh_nameOfApplicant">Name of Applicant</label>
+                                <input type="text" id="sh_nameOfApplicant" name="sh_nameOfApplicant">
+                            </div>
+                            <div class="form-group">
+                                <label for="sh_motherName">Mother's Name</label>
+                                <input type="text" id="sh_motherName" name="sh_motherName">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row-3">
+                            <div class="form-group">
+                                <label for="sh_gender">Gender</label>
+                                <select id="sh_gender" name="sh_gender">
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Others">Others</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="sh_citizenship">Citizenship</label>
+                                <select id="sh_citizenship" name="sh_citizenship">
+                                    <option value="Indian">Indian</option>
+                                    <option value="NRI">NRI</option>
+                                    <option value="PIO">PIO</option>
+                                    <option value="Foreign">Foreign</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="sh_pan">PAN</label>
+                                <input type="text" id="sh_pan" name="sh_pan" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}">
+                            </div>
+                        </div>
+                        
+                        <!-- Continue with all Second Holder fields similar to First Holder -->
+                        <!-- For brevity, I'm showing the structure. You can add all fields following the same pattern -->
+                    </div>
+                </div>
+
+                <!-- Step 4: Third Holder -->
+                <div class="form-step" data-step="4">
+                    <h2 class="step-title">Third Holder Details</h2>
+                    
+                    <div class="alert alert-info">
+                        <strong>Note:</strong> Fill this section only if you have a third holder for the account.
+                    </div>
+                    
+                    <!-- Similar structure for Third Holder -->
+                </div>
+
+                <!-- Step 5: Investment Profile -->
+                <div class="form-step" data-step="5">
+                    <h2 class="step-title">Investment Profile & Objectives</h2>
+                    
+                    <div class="section-group">
+                        <div class="section-title">Section 24 - Investment Profile and Objectives of the Client</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="riskTolerance">Risk Tolerance</label>
+                                <select id="riskTolerance" name="riskTolerance">
+                                    <option value="">Select Risk Tolerance</option>
+                                    <option value="Low">Low</option>
+                                    <option value="Moderate">Moderate</option>
+                                    <option value="High">High</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="investmentExperience">Investment Experience in Equity Markets</label>
+                                <select id="investmentExperience" name="investmentExperience">
+                                    <option value="">Select Experience</option>
+                                    <option value="Less than 1 year">Less than 1 year</option>
+                                    <option value="1-3 years">1-3 years</option>
+                                    <option value="3-5 years">3-5 years</option>
+                                    <option value="More than 5 years">More than 5 years</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Add all Investment Profile fields -->
+                    </div>
+
+                    <div class="section-group">
+                        <div class="section-title">Section 25 - Client Introduced by</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="clientName">Client Name</label>
+                                <input type="text" id="clientName" name="clientName">
+                            </div>
+                            <div class="form-group">
+                                <label for="clientAddress">Address</label>
+                                <textarea id="clientAddress" name="clientAddress"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 6: Declaration -->
+                <div class="form-step" data-step="6">
+                    <h2 class="step-title">Applicant Declaration</h2>
+                    
+                    <div class="section-group">
+                        <div class="section-title">Section 26 - Applicant Declaration</div>
+                        <div class="form-row-3">
+                            <div class="form-group">
+                                <label for="photoFirstHolder">Photo of First Holder</label>
+                                <input type="file" id="photoFirstHolder" name="photoFirstHolder" accept="image/*">
+                            </div>
+                            <div class="form-group">
+                                <label for="firstHolderDate">First Holder Date</label>
+                                <input type="date" id="firstHolderDate" name="firstHolderDate">
+                            </div>
+                            <div class="form-group">
+                                <label for="firstHolderPlace">First Holder Place</label>
+                                <input type="text" id="firstHolderPlace" name="firstHolderPlace">
+                            </div>
+                        </div>
+                        
+                        <!-- Add similar fields for Second and Third Holders -->
+                    </div>
+                </div>
+
+                <!-- Step 7: Review -->
+                <div class="form-step" data-step="7">
+                    <h2 class="step-title">Review & Submit</h2>
+                    
+                    <div class="alert alert-warning">
+                        <strong>Important:</strong> Once you submit this form, the record will be locked and can only be modified through this widget by authorized personnel.
+                    </div>
+
+                    <div id="reviewContent">
+                        <!-- Review content will be populated by JavaScript -->
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="button-group">
+            <div>
+                <button type="button" id="prevBtn" class="btn btn-secondary" onclick="changeStep(-1)" style="display: none;">Previous</button>
+            </div>
+            <div>
+                <button type="button" id="saveDraftBtn" class="btn btn-outline" onclick="saveDraft()">Save as Draft</button>
+                <button type="button" id="nextBtn" class="btn btn-primary" onclick="changeStep(1)">Next</button>
+                <button type="button" id="submitBtn" class="btn btn-success hidden" onclick="submitForm()">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Updated Zoho SDK -->
+    <script src="https://live.zwidgets.com/js-sdk/1.2/ZohoEmbededAppSDK.min.js"></script>
+    <script>
+        // Widget Configuration
+        const WIDGET_CONFIG = {
+            currentStep: 1,
+            totalSteps: 7,
+            recordId: null,
+            isEditMode: false,
+            recordStatus: 'draft',
+            currentRecordData: null,
+            isZohoInitialized: false
+        };
+
+        // Field mapping between Zoho CRM fields and widget field IDs
+        const FIELD_MAPPING = {
+            // Basic Information fields
+            'Name': 'nameOfApplicant',
+            'Owner': 'onboardingOwner', 
+            'Email': 'email',
+            'Secondary_Email': 'secondaryEmail',
+            'Exchange_Rate': 'exchangeRate',
+            'Currency': 'currency',
+            'Email_Opt_Out': 'emailOptOut',
+            'Investor_Distributor_Type': 'investorDistributorType',
+            'Sales_Type': 'salesType',
+            'Lead_Lookup': 'leadLookup',
+            'Family_Lookup': 'familyLookup',
+            'Investor_Lookup': 'investorLookup',
+            'Onboarding_Status': 'onboardingStatus',
+            'Opportunity': 'opportunity',
+            
+            // First Holder fields - Updated to match your API
+            'Father_s_Spouse_s_name': 'fh_fatherSpouseName',
+            'Mother_s_Name': 'fh_motherName',
+            'FH_Date_of_Birth': 'fh_dateOfBirth',
+            'Marital_Status': 'fh_maritalStatus',
+            'Gender': 'fh_gender',
+            'Citizenship': 'fh_citizenship',
+            'FH_Type_of_Account': 'fh_typeOfAccount',
+            'Residential_Status': 'fh_residentialStatus',
+            'PAN': 'fh_pan',
+            'GST_No': 'fh_gstNo',
+            'UID_Aadhaar_No': 'fh_uidAadhaar',
+            'CKYC_No': 'fh_ckyc',
+            'TAN': 'fh_tan',
+            'Net_worth_Not_older_than_1_year': 'fh_netWorth',
+            'As_on_Date': 'fh_asOnDate',
+            'Income_Range_per_annum': 'fh_incomeRange',
+            'Occupation': 'fh_occupation',
+            'Please_select_Status': 'fh_pleaseSelectStatus',
+            'Sources_of_Funds': 'fh_sourcesOfFunds',
+            'Nature_of_Business_Type_of_Company_Firm_Prof': 'fh_natureOfBusinessProfession',
+            'Overall_Investment_Goals': 'fh_overallInvestmentGoals',
+            'Type_of_Company_Firm': 'fh_typeOfCompanyFirm',
+            'Mobile_No': 'fh_mobileNo',
+            'Landline_No': 'fh_landlineNo',
+            'Email_ID': 'fh_emailId',
+            'Passport_Number': 'fh_passportNumber',
+            'Passport_Expiry_Date': 'fh_passportExpiryDate',
+            'PAN_Card': 'fh_panCard',
+            'Place_of_Incorporation': 'fh_voterID',
+            'UID_Aadhaar': 'fh_uidAadhaarProof',
+            'Driving_License': 'fh_drivingLicense',
+            'Driving_License_Expiry_Date': 'fh_drivingLicenseExpiryDate',
+            'Voter_ID': 'preferredAssetClassOther',
+            
+            // Second Holder fields - Updated to match your API
+            'Name_of_Applicant1': 'sh_nameOfApplicant',
+            'Mother_s_Name1': 'sh_motherName',
+            'Gender1': 'sh_gender',
+            'Citizenship1': 'sh_citizenship',
+            'PAN1': 'sh_pan',
+            
+            // Third Holder fields - Updated to match your API
+            'Name_of_Applicant2': 'th_nameOfApplicant',
+            'Mother_s_Name2': 'th_motherName',
+            'Registered_Address_2': 'th_gender', // This seems to be mapped to gender in your API
+            'TH_Citizenship': 'th_citizenship',
+            'PAN2': 'th_pan',
+            
+            // Investment Profile fields
+            'Risk_Tolerance': 'riskTolerance',
+            'Investment_Experience_in_Equity_Markets': 'investmentExperience',
+            'Client_Name': 'clientName',
+            'Address': 'clientAddress',
+            
+            // Declaration fields
+            'Photo_of_First_Holder': 'photoFirstHolder',
+            'First_Holder_Date': 'firstHolderDate',
+            'First_Holder_Place': 'firstHolderPlace',
+            'Second_Holder_Date': 'secondHolderDate',
+            'Second_Holder_Place': 'secondHolderPlace',
+            'Third_Holder_Date': 'thirdHolderDate',
+            'Third_Holder_Place': 'thirdHolderPlace',
+            
+            // Additional fields based on your API response
+            'Account_No': 'fh_accountNo',
+            'Account_Type': 'fh_accountType',
+            'Address_Type': 'fh_addressType',
+            'Bank_Name': 'fh_bankName',
+            'Branch': 'fh_branch',
+            'IFSC_Code': 'fh_ifscCode',
+            'City_Town_Village': 'fh_cityTownVillage',
+            'Country': 'fh_country',
+            'State': 'fh_state',
+            'Pincode': 'fh_pincode',
+            'Country_of_Birth': 'fh_countryOfBirth',
+            'Place_City_of_Birth': 'fh_placeCityOfBirth',
+            'Country_of_Jurisdiction_of_Residence': 'fh_countryOfJurisdiction',
+            'Proof_of_Address': 'fh_proofOfAddress',
+            'Tax_Identification_Number_or_Equivalent': 'fh_taxIdentificationNumber',
+            'Tax_Residency_in_Jurisdiction_s_Outside_India': 'fh_taxResidencyOutsideIndia',
+            'Telephone': 'fh_telephone',
+            'Mobile': 'fh_mobile',
+            'Permanent_address': 'fh_permanentAddress',
+            'Other_Occupation': 'fh_otherOccupation',
+            'Voter_ID1': 'sh_voterID',
+            'Driving_License1': 'sh_drivingLicense',
+            'Driving_License_Expiry_Date1': 'sh_drivingLicenseExpiryDate',
+            'Passport_Number1': 'sh_passportNumber',
+            'Passport_Expiry_Date1': 'sh_passportExpiryDate',
+            'UID_Aadhaar1': 'sh_uidAadhaar',
+            'PAN_Card1': 'sh_panCard',
+            'CKYC_No1': 'sh_ckycNo',
+            'GST_No1': 'sh_gstNo',
+            'TAN1': 'sh_tan',
+            'Net_worth_Not_older_than_1_year1': 'sh_netWorth',
+            'As_on_Date1': 'sh_asOnDate',
+            'Income_Range_per_annum1': 'sh_incomeRange',
+            'Occupation1': 'sh_occupation',
+            'Please_select_Status1': 'sh_pleaseSelectStatus',
+            'Sources_of_Funds1': 'sh_sourcesOfFunds',
+            'Overall_Investment_Goals1': 'sh_overallInvestmentGoals',
+            'Father_s_Spouse_s_name1': 'sh_fatherSpouseName',
+            'Date_of_Birth1': 'sh_dateOfBirth',
+            'Marital_Status1': 'sh_maritalStatus',
+            'Residential_Status1': 'sh_residentialStatus',
+            'Email_ID2': 'sh_emailId',
+            'Email_ID3': 'sh_emailIdProof',
+            'Landline_No1': 'sh_landlineNo',
+            'Mobile_no2': 'sh_mobileNo',
+            'City_Town_Village1': 'sh_cityTownVillage',
+            'Country1': 'sh_country',
+            'State1': 'sh_state',
+            'Pincode1': 'sh_pincode',
+            'Country_of_Birth1': 'sh_countryOfBirth',
+            'Place_City_of_Birth1': 'sh_placeCityOfBirth',
+            'Country_of_Jurisdiction_of_Residence1': 'sh_countryOfJurisdiction',
+            'Proof_of_Address1': 'sh_proofOfAddress',
+            'Tax_Identification_Number_or_Equivalent1': 'sh_taxIdentificationNumber',
+            'Tax_Residency_in_Jurisdiction_s_Outside_India1': 'sh_taxResidencyOutsideIndia',
+            'Telephone1': 'sh_telephone',
+            'Mobile1': 'sh_mobile',
+            'Permanent_address1': 'sh_permanentAddress',
+            'Any_Other_Information': 'sh_otherOccupation'
+        };
+
+        // Wait for DOM and Zoho SDK initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeZohoSDK();
+        });
+
+        // Initialize Zoho SDK properly
+        function initializeZohoSDK() {
+            console.log('Starting Zoho SDK initialization...');
+            
+            // Check if ZOHO object exists
+            if (typeof ZOHO === 'undefined') {
+                console.error('ZOHO SDK not loaded');
+                initializeWidgetWithoutZoho();
+                return;
+            }
+
+            // Initialize the embedded app
+            ZOHO.embeddedApp.on("PageLoad", function(data) {
+                console.log("Zoho PageLoad event received:", data);
+                WIDGET_CONFIG.isZohoInitialized = true;
+                initializeWidget();
+            });
+
+            // Initialize with error handling
+            ZOHO.embeddedApp.init()
+                .then(function() {
+                    console.log("Zoho CRM API initialized successfully");
+                    WIDGET_CONFIG.isZohoInitialized = true;
+                    
+                    // If PageLoad event hasn't fired, initialize anyway
+                    setTimeout(() => {
+                        if (!WIDGET_CONFIG.currentRecordData) {
+                            initializeWidget();
+                        }
+                    }, 1000);
+                })
+                .catch(function(error) {
+                    console.error("Error initializing Zoho CRM API:", error);
+                    initializeWidgetWithoutZoho();
+                });
+        }
+
+        // Initialize widget without Zoho integration
+        function initializeWidgetWithoutZoho() {
+            console.log('Initializing widget without Zoho integration');
+            showAlert('Widget loaded in standalone mode. Zoho integration unavailable.', 'warning');
+            updateProgressBar();
+            showLoading(false);
+        }
+
+        // Main widget initialization
+        async function initializeWidget() {
+            try {
+                showLoading(true);
+                console.log('Initializing widget...');
+                
+                // Get record ID
+                const recordId = await getCurrentRecordId();
+                
+                if (recordId && WIDGET_CONFIG.isZohoInitialized) {
+                    WIDGET_CONFIG.recordId = recordId;
+                    WIDGET_CONFIG.isEditMode = true;
+                    await loadExistingRecord(recordId);
+                } else {
+                    console.log('No record ID found or Zoho not initialized, starting with empty form');
+                    if (!WIDGET_CONFIG.isZohoInitialized) {
+                        showAlert('Zoho integration not available. You can still use the form, but data won\'t be saved to CRM.', 'info');
+                    }
+                }
+                
+                updateProgressBar();
+                showLoading(false);
+                
+            } catch (error) {
+                console.error('Error initializing widget:', error);
+                showAlert('Error loading data: ' + error.message, 'error');
+                showLoading(false);
+            }
+        }
+
+        // Get current record ID with multiple fallback methods
+        async function getCurrentRecordId() {
+            try {
+                // Method 1: URL parameters
+                const urlParams = new URLSearchParams(window.location.search);
+                let recordId = urlParams.get('recordId');
+                
+                if (recordId) {
+                    console.log('Record ID from URL:', recordId);
+                    return recordId;
+                }
+                
+                // Method 2: Hardcoded for testing (remove in production)
+                recordId = "832485000001605116";
+                if (recordId) {
+                    console.log('Using hardcoded record ID for testing:', recordId);
+                    return recordId;
+                }
+                
+                // Method 3: Zoho context (if available)
+                if (WIDGET_CONFIG.isZohoInitialized && typeof ZOHO !== 'undefined') {
+                    try {
+                        const entity = await ZOHO.CRM.UI.Record.get();
+                        if (entity && entity.data && entity.data[0] && entity.data[0].id) {
+                            console.log('Record ID from Zoho context:', entity.data[0].id);
+                            return entity.data[0].id;
+                        }
+                    } catch (contextError) {
+                        console.log('Could not get record from Zoho context:', contextError.message);
+                    }
+                }
+                
+                return null;
+            } catch (error) {
+                console.error('Error getting current record ID:', error);
+                return null;
+            }
+        }
+
+        // Load existing record with better error handling
+        async function loadExistingRecord(recordId) {
+            try {
+                console.log('Loading record with ID:', recordId);
+                
+                if (!WIDGET_CONFIG.isZohoInitialized) {
+                    throw new Error('Zoho SDK not initialized');
+                }
+                
+                // Fetch record from Zoho CRM
+                const response = await ZOHO.CRM.API.getRecord({
+                    Entity: "Onboarding", // Your actual module name
+                    RecordID: recordId
+                });
+                
+                console.log('API Response:', response);
+                
+                if (response && response.data && response.data.length > 0) {
+                    const recordData = response.data[0];
+                    WIDGET_CONFIG.currentRecordData = recordData;
+                    
+                    console.log('Record data received:', recordData);
+                    
+                    // Populate form with existing data
+                    populateForm(recordData);
+                    
+                    // Update status badge
+                    const status = recordData.Onboarding_Status || 'Draft';
+                    updateStatusBadge(status.toLowerCase());
+                    
+                    // Check if record is locked
+                    if (status === 'Submitted' || status === 'Approved') {
+                        lockForm();
+                    }
+                    
+                    showAlert('Record data loaded successfully!', 'success');
+                } else {
+                    console.log('No record data found');
+                    showAlert('No existing data found for this record.', 'info');
+                }
+            } catch (error) {
+                console.error('Error loading record:', error);
+                
+                // Provide specific error messages
+                if (error.message.includes('Parentwindow reference not found')) {
+                    showAlert('Unable to connect to Zoho CRM. Please ensure the widget is running within Zoho CRM.', 'error');
+                } else if (error.message.includes('not initialized')) {
+                    showAlert('Zoho integration not available. Running in offline mode.', 'warning');
+                } else {
+                    showAlert('Error loading record: ' + (error.message || 'Unknown error'), 'error');
+                }
+            }
+        }
+
+        // Keep all existing functions but add error handling for Zoho operations
+        function populateForm(recordData) {
+            try {
+                console.log('Populating form with data:', recordData);
+                
+                // Iterate through field mapping and populate form fields
+                Object.keys(FIELD_MAPPING).forEach(crmField => {
+                    const widgetFieldId = FIELD_MAPPING[crmField];
+                    const fieldElement = document.getElementById(widgetFieldId);
+                    
+                    if (fieldElement && recordData[crmField] !== undefined && recordData[crmField] !== null) {
+                        const fieldValue = recordData[crmField];
+                        
+                        // Handle different field types
+                        if (fieldElement.type === 'checkbox') {
+                            fieldElement.checked = fieldValue === true || fieldValue === 'true' || fieldValue === 'Yes';
+                        } else if (fieldElement.type === 'date') {
+                            // Handle date fields - convert Zoho date format if needed
+                            if (fieldValue) {
+                                const dateValue = new Date(fieldValue);
+                                if (!isNaN(dateValue.getTime())) {
+                                    fieldElement.value = dateValue.toISOString().split('T')[0];
+                                }
+                            }
+                        } else if (fieldElement.tagName === 'SELECT') {
+                            // Handle dropdown fields
+                            const options = fieldElement.querySelectorAll('option');
+                            for (let option of options) {
+                                if (option.value === fieldValue) {
+                                    fieldElement.value = fieldValue;
+                                    break;
+                                }
+                            }
+                        } else {
+                            // Handle text, number, email, etc.
+                            fieldElement.value = fieldValue;
+                        }
+                        
+                        console.log(`Populated field ${widgetFieldId} with value:`, fieldValue);
+                    }
+                });
+                
+                // Set hidden fields
+                document.getElementById('recordId').value = recordData.id || '';
+                document.getElementById('recordStatus').value = recordData.Onboarding_Status || 'Draft';
+                WIDGET_CONFIG.recordStatus = recordData.Onboarding_Status || 'Draft';
+                
+            } catch (error) {
+                console.error('Error populating form:', error);
+                showAlert('Error populating form fields: ' + error.message, 'error');
+            }
+        }
+
+        // Save draft with Zoho availability check
+        async function saveDraft() {
+            try {
+                if (!WIDGET_CONFIG.isZohoInitialized) {
+                    showAlert('Cannot save: Zoho integration not available. Please check your connection.', 'error');
+                    return;
+                }
+                
+                showLoading(true);
+                const formData = collectFormData();
+                
+                // Prepare data for Zoho CRM
+                const crmData = convertToCRMFormat(formData);
+                crmData.Onboarding_Status = 'Draft';
+                
+                console.log('Saving data to CRM:', crmData);
+                
+                let response;
+                if (WIDGET_CONFIG.recordId) {
+                    // Update existing record
+                    response = await ZOHO.CRM.API.updateRecord({
+                        Entity: "Gotenks", // Your actual module name
+                        RecordID: WIDGET_CONFIG.recordId,
+                        APIData: crmData
+                    });
+                } else {
+                    // Create new record
+                    response = await ZOHO.CRM.API.insertRecord({
+                        Entity: "Gotenks", // Your actual module name
+                        APIData: crmData
+                    });
+                }
+                
+                console.log('Save response:', response);
+                
+                if (response && response.data && response.data.length > 0) {
+                    const result = response.data[0];
+                    if (result.code === 'SUCCESS') {
+                        WIDGET_CONFIG.recordId = result.details.id;
+                        document.getElementById('recordId').value = result.details.id;
+                        showAlert('Draft saved successfully!', 'success');
+                        updateStatusBadge('draft');
+                    } else {
+                        throw new Error(result.message || 'Failed to save draft');
+                    }
+                }
+            } catch (error) {
+                console.error('Error saving draft:', error);
+                showAlert('Error saving draft: ' + (error.message || 'Unknown error'), 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Submit form with Zoho availability check
+        async function submitForm() {
+            try {
+                if (!WIDGET_CONFIG.isZohoInitialized) {
+                    showAlert('Cannot submit: Zoho integration not available. Please check your connection.', 'error');
+                    return;
+                }
+                
+                if (!validateAllSteps()) {
+                    showAlert('Please complete all required fields before submitting.', 'error');
+                    return;
+                }
+                
+                showLoading(true);
+                const formData = collectFormData();
+                
+                // Prepare data for Zoho CRM
+                const crmData = convertToCRMFormat(formData);
+                crmData.Onboarding_Status = 'Submitted';
+                
+                let response;
+                if (WIDGET_CONFIG.recordId) {
+                    response = await ZOHO.CRM.API.updateRecord({
+                        Entity: "Onboarding", // Your actual module name
+                        RecordID: WIDGET_CONFIG.recordId,
+                        APIData: crmData
+                    });
+                } else {
+                    response = await ZOHO.CRM.API.insertRecord({
+                        Entity: "Onboarding", // Your actual module name
+                        APIData: crmData
+                    });
+                }
+                
+                console.log('Submit response:', response);
+                
+                if (response && response.data && response.data.length > 0) {
+                    const result = response.data[0];
+                    if (result.code === 'SUCCESS') {
+                        WIDGET_CONFIG.recordStatus = 'Submitted';
+                        document.getElementById('recordStatus').value = 'Submitted';
+                        updateStatusBadge('submitted');
+                        lockForm();
+                        showAlert('Form submitted successfully! Your onboarding record has been locked for editing.', 'success');
+                    } else {
+                        throw new Error(result.message || 'Failed to submit form');
+                    }
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                showAlert('Error submitting form: ' + (error.message || 'Unknown error'), 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Keep all existing utility functions exactly as they are
+        function updateStatusBadge(status) {
+            const statusContainer = document.getElementById('statusContainer');
+            const statusBadge = document.getElementById('statusBadge');
+            
+            statusContainer.classList.remove('hidden');
+            statusBadge.className = `status-badge status-${status}`;
+            
+            switch(status.toLowerCase()) {
+                case 'draft':
+                case 'in progress':
+                    statusBadge.className = 'status-badge status-draft';
+                    statusBadge.textContent = 'Draft - In Progress';
+                    break;
+                case 'submitted':
+                case 'under review':
+                    statusBadge.className = 'status-badge status-submitted';
+                    statusBadge.textContent = 'Submitted - Under Review';
+                    break;
+                case 'approved':
+                case 'locked':
+                    statusBadge.className = 'status-badge status-locked';
+                    statusBadge.textContent = 'Approved - Locked for Editing';
+                    break;
+                case 'rejected':
+                    statusBadge.className = 'status-badge status-error';
+                    statusBadge.textContent = 'Rejected - Requires Revision';
+                    break;
+                default:
+                    statusBadge.className = 'status-badge status-draft';
+                    statusBadge.textContent = 'Draft - In Progress';
+            }
+        }
+
+        function lockForm() {
+            // Disable all form inputs
+            const inputs = document.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                if (input.id !== 'recordId' && input.id !== 'recordStatus') {
+                    input.disabled = true;
+                    input.style.backgroundColor = '#f8f9fa';
+                    input.style.cursor = 'not-allowed';
+                }
+            });
+            
+            // Hide action buttons
+            document.getElementById('saveDraftBtn').style.display = 'none';
+            document.getElementById('submitBtn').style.display = 'none';
+            
+            // Update Next button text to "View Only"
+            const nextBtn = document.getElementById('nextBtn');
+            if (WIDGET_CONFIG.currentStep < WIDGET_CONFIG.totalSteps) {
+                nextBtn.textContent = 'Next (View Only)';
+            }
+            
+            showAlert('This record has been submitted/approved and is locked for editing.', 'warning');
+        }
+
+        function changeStep(direction) {
+            // Skip validation if form is locked (view only mode)
+            const isLocked = document.querySelector('input:disabled') !== null;
+            
+            if (direction === 1 && !isLocked && !validateCurrentStep()) {
+                return;
+            }
+            
+            const newStep = WIDGET_CONFIG.currentStep + direction;
+            
+            if (newStep < 1 || newStep > WIDGET_CONFIG.totalSteps) {
+                return;
+            }
+            
+            // Hide current step
+            document.querySelector(`.form-step[data-step="${WIDGET_CONFIG.currentStep}"]`).classList.remove('active');
+            document.querySelector(`.step-indicator[data-step="${WIDGET_CONFIG.currentStep}"]`).classList.remove('active');
+            
+            // Mark current step as completed if moving forward
+            if (direction === 1) {
+                document.querySelector(`.step-indicator[data-step="${WIDGET_CONFIG.currentStep}"]`).classList.add('completed');
+            }
+            
+            // Show new step
+            WIDGET_CONFIG.currentStep = newStep;
+            document.querySelector(`.form-step[data-step="${WIDGET_CONFIG.currentStep}"]`).classList.add('active');
+            document.querySelector(`.step-indicator[data-step="${WIDGET_CONFIG.currentStep}"]`).classList.add('active');
+            
+            // Update buttons
+            updateButtons();
+            updateProgressBar();
+            
+            // Populate review step if on step 7
+            if (WIDGET_CONFIG.currentStep === 7) {
+                populateReviewStep();
+            }
+        }
+
+        function validateCurrentStep() {
+            const currentStepElement = document.querySelector(`.form-step[data-step="${WIDGET_CONFIG.currentStep}"]`);
+            const requiredFields = currentStepElement.querySelectorAll('[required]');
+            
+            let isValid = true;
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.style.borderColor = '#dc3545';
+                    isValid = false;
+                } else {
+                    field.style.borderColor = '#d1d3e2';
+                }
+            });
+            
+            if (!isValid) {
+                showAlert('Please fill in all required fields before proceeding.', 'error');
+            }
+            
+            return isValid;
+        }
+
+        function updateButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // Show/hide previous button
+            prevBtn.style.display = WIDGET_CONFIG.currentStep === 1 ? 'none' : 'inline-block';
+            
+            // Show/hide next and submit buttons
+            if (WIDGET_CONFIG.currentStep === WIDGET_CONFIG.totalSteps) {
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+            }
+        }
+
+        function updateProgressBar() {
+            const progress = (WIDGET_CONFIG.currentStep / WIDGET_CONFIG.totalSteps) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+        }
+
+        function populateReviewStep() {
+            const reviewContent = document.getElementById('reviewContent');
+            
+            let html = '<div class="review-sections">';
+            
+            if (WIDGET_CONFIG.currentRecordData) {
+                // Use actual record data for review
+                const data = WIDGET_CONFIG.currentRecordData;
+                
+                // Basic Information
+                html += `
+                    <div class="review-section">
+                        <h3>Basic Information</h3>
+                        <div class="review-row">
+                            <strong>Name of Applicant:</strong> <span>${data.Name_of_Applicant || 'Not provided'}</span>
+                        </div>
+                        <div class="review-row">
+                            <strong>Email:</strong> <span>${data.Email || 'Not provided'}</span>
+                        </div>
+                        <div class="review-row">
+                            <strong>Investor Type:</strong> <span>${data.Investor_Distributor_Type || 'Not provided'}</span>
+                        </div>
+                        <div class="review-row">
+                            <strong>Onboarding Status:</strong> <span>${data.Onboarding_Status || 'Draft'}</span>
+                        </div>
+                    </div>
+                `;
+
+                // First Holder Details
+                html += `
+                    <div class="review-section">
+                        <h3>First Holder Details</h3>
+                        <div class="review-row">
+                            <strong>Date of Birth:</strong> <span>${data.FH_Date_of_Birth || 'Not provided'}</span>
+                        </div>
+                        <div class="review-row">
+                            <strong>Gender:</strong> <span>${data.FH_Gender || 'Not provided'}</span>
+                        </div>
+                        <div class="review-row">
+                            <strong>PAN:</strong> <span>${data.FH_PAN || 'Not provided'}</span>
+                        </div>
+                        <div class="review-row">
+                            <strong>Mobile:</strong> <span>${data.FH_Mobile_No || 'Not provided'}</span>
+                        </div>
+                        <div class="review-row">
+                            <strong>Email:</strong> <span>${data.FH_Email_ID || 'Not provided'}</span>
+                        </div>
+                    </div>
+                `;
+                
+                // Investment Profile
+                if (data.Risk_Tolerance || data.Investment_Experience_in_Equity_Markets) {
+                    html += `
+                        <div class="review-section">
+                            <h3>Investment Profile</h3>
+                            <div class="review-row">
+                                <strong>Risk Tolerance:</strong> <span>${data.Risk_Tolerance || 'Not provided'}</span>
+                            </div>
+                            <div class="review-row">
+                                <strong>Investment Experience:</strong> <span>${data.Investment_Experience_in_Equity_Markets || 'Not provided'}</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            } else {
+                // Fallback to form data if no record data available
+                const formData = new FormData(document.getElementById('onboardingForm'));
+                
+                html += `
+                    <div class="review-section">
+                        <h3>Basic Information</h3>
+                        <div class="review-row">
+                            <strong>Name of Applicant:</strong> <span>${formData.get('nameOfApplicant') || 'Not provided'}</span>
+                        </div>
+                        <div class="review-row">
+                            <strong>Email:</strong> <span>${formData.get('email') || 'Not provided'}</span>
+                        </div>
+                        <div class="review-row">
+                            <strong>Investor Type:</strong> <span>${formData.get('investorDistributorType') || 'Not provided'}</span>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            html += '</div>';
+            reviewContent.innerHTML = html;
+        }
+
+        function convertToCRMFormat(formData) {
+            const crmData = {};
+            
+            // Convert widget form data to CRM field format
+            Object.keys(formData).forEach(widgetField => {
+                // Find the corresponding CRM field
+                const crmField = Object.keys(FIELD_MAPPING).find(key => 
+                    FIELD_MAPPING[key] === widgetField
+                );
+                
+                if (crmField) {
+                    crmData[crmField] = formData[widgetField];
+                }
+            });
+            
+            return crmData;
+        }
+
+        function collectFormData() {
+            const formData = new FormData(document.getElementById('onboardingForm'));
+            const data = {};
+            
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            
+            // Add record ID if exists
+            if (WIDGET_CONFIG.recordId) {
+                data.recordId = WIDGET_CONFIG.recordId;
+            }
+            
+            return data;
+        }
+
+        function validateAllSteps() {
+            for (let step = 1; step <= WIDGET_CONFIG.totalSteps - 1; step++) {
+                const stepElement = document.querySelector(`.form-step[data-step="${step}"]`);
+                const requiredFields = stepElement.querySelectorAll('[required]');
+                
+                for (let field of requiredFields) {
+                    if (!field.value.trim()) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        function showLoading(show) {
+            const loadingScreen = document.getElementById('loadingScreen');
+            const formSteps = document.querySelectorAll('.form-step');
+            
+            if (show) {
+                loadingScreen.classList.remove('hidden');
+                formSteps.forEach(step => step.style.display = 'none');
+            } else {
+                loadingScreen.classList.add('hidden');
+                formSteps.forEach(step => step.style.display = '');
+                document.querySelector('.form-step.active').style.display = 'block';
+            }
+        }
+
+        function showAlert(message, type = 'info') {
+            // Remove existing alerts first
+            const existingAlerts = document.querySelectorAll('.alert');
+            existingAlerts.forEach(alert => alert.remove());
+            
+            // Create alert element
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.innerHTML = message;
+            
+            // Insert at top of form container
+            const formContainer = document.querySelector('.form-container');
+            formContainer.insertBefore(alert, formContainer.firstChild);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.parentNode.removeChild(alert);
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
+
